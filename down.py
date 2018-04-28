@@ -19,10 +19,10 @@ def find_rank(page):#通过每日排行榜获取最新没张图的链接，保�
     rank_place=['北海道_东北','关东','中部','近畿','中国_四国','九州_冲绳','国际']
     txt_name=str(time.strftime('%Y_%m_%d',time.localtime(time.time())))+str(rank_place[page])+'.txt'
     #新建一个文本文档用于存储id信息，文件名是程序运行的时间,加上对应排行榜的标题
-    if os.path.exists('V:/picture/rank_list/'+txt_name):
-        os.remove('V:/picture/rank_list/'+txt_name)#先移除旧文档，再新建，防止信息重复
+    if os.path.exists('picture/rank_list/'+txt_name):
+        os.remove('picture/rank_list/'+txt_name)#先移除旧文档，再新建，防止信息重复
     for i in list_img: 
-            with open('V:/picture/rank_list/'+ txt_name, 'a')as f:
+            with open('picture/rank_list/'+ txt_name, 'a')as f:
                 f.write('https://www.pixiv.net/'+i+'\n')
     rank_id=[]#创建一个空列表用于储存id
     for i in list_img:
@@ -68,7 +68,7 @@ def down_img(img_place,img_id,txt_name,count):
         req.add_header('Referer','https://www.pixiv.net/ranking_area.php?type=detail&no=6')
         req.add_header("User-Agent",'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36')
         img=urllib.request.urlopen(req).read()   
-    with open('V:/picture/'+txt_name+r'/'+img_id+'.jpg','wb')as f:
+    with open('picture/'+txt_name+r'/'+img_id+'.jpg','wb')as f:
         print('正在下载图片%9s' %img_id,end='\t')
         f.write(img)
         print('下载完成')
@@ -78,7 +78,7 @@ def main(page):
     count=0
     for i in find_rank(page):
         txt_name=str(time.strftime('%Y_%m_%d',time.localtime(time.time())))
-        file_name='V:/picture/'+txt_name+r'/'+i+'.jpg'#以id保存图片
+        file_name='picture/'+txt_name+r'/'+i+'.jpg'#以id保存图片
         if os.path.exists(file_name):
             print('id%9s图片已存在，正在跳过' %i) #检查图片是否已存在，防止重复下载
         else:
@@ -89,12 +89,12 @@ if __name__=="__main__":
     stt=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(start_time))
     txt_name=str(time.strftime('%Y_%m_%d',time.localtime(time.time())))
        #新建文件夹用于保存每日的图片
-    if int(os.path.exists('V:/picture/'+txt_name))==0:
+    if int(os.path.exists('picture/'+txt_name))==0:
         print('正在创建目录%s' %txt_name,end='\t')
-        os.makedirs('V:/picture/'+txt_name)
+        os.makedirs('picture/'+txt_name)
         print('创建完成')
-    if int(os.path.exists('V:/picture/rank_list'))==0:
-        os.makedirs('V:/picture/rank_list')
+    if int(os.path.exists('picture/rank_list'))==0:
+        os.makedirs('picture/rank_list')
     pool=Pool()
     counts=(pool.map(main,range(7)))#每页分别计数，最后返回一个数目列表
     count=0
@@ -107,8 +107,8 @@ if __name__=="__main__":
     print('开始下载的时间是%s\n结束下载的时间是%s' %(stt,edt))
     process=(end_time-start_time)/60
     print('本次下载耗时%.2f分钟' %process)
-    with open('V:/picture/'+txt_name+'/''log.txt','a')as f:
+    with open('picture/'+txt_name+'/''log.txt','a')as f:
         f.write('已完成全部下载，谢谢使用，本次下载%3d图片\n开始下载的时间是%s\n结束下载的时间是%s\n下载耗时%.2f分钟\n' %(count,stt,edt,process))#生成日志文件保存下载信息
-    os.system('V:/picture/'+txt_name+'/''log.txt')
+    os.system('picture/'+txt_name+'/''log.txt')
 #不足：漫画只可以保存第一张，虽然将动图替换保存为了琪露诺，但是无法获取动图，其次对于png格式图片无法获取到真是原图。
 #目前可以获得真实原图了，漫画的情况还要等等看、
